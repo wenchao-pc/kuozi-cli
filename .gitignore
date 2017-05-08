@@ -38,3 +38,7 @@ jspm_packages
 
 #.DS_Store
 .DS_Store
+
+dist
+
+config/ssh.js

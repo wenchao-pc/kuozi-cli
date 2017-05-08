@@ -1,0 +1,39 @@
+id:""
+from:""
+to:""
+hasRead:"" 是否已读
+msgType:"" 文件类型：text/img/voice 
+message:""	text.data/img.url/?
+timestamp:"" 时间戳
+
+
+文本
+data: "?"
+error: false
+errorCode:""
+errorText:""
+ext:Object
+from:"kuo-zi"
+id:"263954323380109728"
+to:"xuwenchao"
+type:"chat"
+
+图片
+accessToken: "YWMtChZ3UqVgEeaQtJdhT2DLSU1-S6DcShHjkNXh_7qs2vXHrUVglcsR5qQyK5WPsqFIAwMAAAFYQeS5rgBPGgAGlkCvXRYR7rf38eCPL2KVA5ocUZ17b54m2wWR2ch6WA"
+error: false
+errorCode: ""
+errorText: ""
+ext: Object
+file_length: ""
+filename: "加-点击.png"
+filetype: ""
+from: "kuo-zi"
+height: 0
+id: "263953366546121120"
+secret: "uwjbmqlwEeaZWod_DBEzQRRk6d7uq6x2lck3kI3B7zTZbNTA"
+thumb: undefined
+thumb_secret: undefined
+to: "xuwenchao"
+type: "chat"
+url: "https://a1.easemob.com/easemob-demo/chatdemoui/chatfiles/bb08db90-a970-11e6-a533-af0a222e885d"
+width: 0
