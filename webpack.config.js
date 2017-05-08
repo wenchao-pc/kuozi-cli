@@ -8,9 +8,7 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var basicConfig = {
     entry: { app: "./src/main.js" },
     output: {
-        path: path.resolve(__dirname, "./dist"),
-        filename: "./[name].[chunkhash].js",
-        chunkFilename: path.join('./[id].[chunkhash].js')
+        path: path.resolve(__dirname, "./dist")
     },
     resolve: {
         extensions: [".js", ".vue"]
@@ -63,6 +61,10 @@ var basicConfig = {
 //webpack开发环境配置
 var devConfig = {
     entry: { app: ["./src/main.js", "webpack-hot-middleware/client?noInfo=true&reload=true"] },
+    output: {
+        filename: "./[name].[hash].js",
+        chunkFilename: path.join('./[id].[hash].js')
+    },
     devtool: '#source-map',
     module: {
         rules: [{
@@ -109,6 +111,10 @@ var devConfig = {
 
 //webpack生产环境配置
 var buildConfig = {
+    output: {
+        filename: "./[name].[chunkhash].js",
+        chunkFilename: path.join('./[id].[chunkhash].js')
+    },
     module: {
         rules: [{
             test: /\.vue$/,
