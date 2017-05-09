@@ -38,9 +38,6 @@ var basicConfig = {
                 }
             }]
         }, {
-            test: /\.(eot|svg|ttf|woff|woff2)(\?\S*)?$/,
-            loader: 'file-loader'
-        }, {
             test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
             loader: 'url-loader',
             options: {
@@ -49,7 +46,7 @@ var basicConfig = {
             }
         }, {
             test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-            loader: 'url-loader',
+            loader: 'file-loader',
             options: {
                 limit: 10000,
                 name: './fonts/[name].[hash:7].[ext]'
