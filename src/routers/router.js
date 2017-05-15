@@ -4,30 +4,30 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import index from "./../view/index.vue";
+import login from "./../view/login.vue";
+import home from "./../view/home";
+
 Vue.use(Router);
-
-
-let routes = [];
-
-function importAll(r) {
-    r.keys().forEach(key => {
-        let path = key.replace(".", "").replace(".vue", "");
-        let name = _.last(path.split("/"));
-        routes.push({
-            name: name,
-            path: path,
-            component: r(key)
-        });
-    })
-};
-
-importAll(require.context('./../view/', true, /\.vue$/));
 
 let router = new Router({
     // history模式需要后台支持
     // mode: "history",
     scrollBehavior: () => ({ y: 0 }),
-    routes: routes
+    routes: [{
+        name: "index",
+        path: "/index",
+        component: login
+    }, {
+        name: "login",
+        path: "/login",
+        component: login
+    }, {
+        name: "home",
+        path: "/home",
+        component: home,
+        // children: main
+    }, ]
 });
 //路由跳转钱操作
 router.beforeEach((to, form, next) => {

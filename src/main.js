@@ -14,10 +14,23 @@ import "./mixin/mixin";
 import "./filtres/filter";
 import App from "./App";
 
+import VueTaber from 'vue-tabs';
+import 'vue-tabs/vue-tabs.css';
+import tabs from './routers/tabs.js';
+
+
+Vue.use(VueTaber);
+
+const vueTaber = new VueTaber({
+    tabs,
+    persist: true
+})
+
 Vue.config.devtools = true;
 new Vue({
     el: '#app',
     router,
+    taber: vueTaber,
     store,
     render: h => h(App)
 });
