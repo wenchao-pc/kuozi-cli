@@ -1,1 +1,1 @@
-{"tpl":{"vue":{"url":"https://github.com/wenchao-pc/kuozi-cli.git","branch":"vue"}}}
+{"tpl":{"vue":{"url":"https://github.com/wenchao-pc/kuozi-cli.git","branch":"vue"},"vue-mobile":{"url":"https://github.com/wenchao-pc/kuozi-cli.git","branch":"vue-mobile"},"vue-desktop-router":{"url":"https://github.com/wenchao-pc/kuozi-cli.git","branch":"vue-desktop-router"},"vue-desktop-tab":{"url":"https://github.com/wenchao-pc/kuozi-cli.git","branch":"vue-desktop-tab"}}}
