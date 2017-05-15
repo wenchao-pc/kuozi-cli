@@ -35,7 +35,9 @@ gulp.task("dev", function() {
         proxyTable["/" + p.baseURL] = {
             target: p.proxyServer,
             changeOrigin: true,
-            pathRewrite: {}
+            pathRewrite: {
+                ["/" + p.baseURL]: p.baseURL
+            }
         }
     };
     Object.keys(proxyTable).forEach(function(context) {
