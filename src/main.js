@@ -16,7 +16,7 @@ import "./filtres/filter";
 import App from "./App";
 
 //手势操作
-import VueTouch = 'vue-touch';
+import VueTouch from 'vue-touch';
 Vue.use(VueTouch, { name: 'v-touch' });
 
 import FastClick from "fastclick";
