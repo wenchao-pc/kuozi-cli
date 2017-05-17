@@ -6,7 +6,9 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 //webpack基础配置
 var basicConfig = {
-    entry: { app: "./src/main.js" },
+    entry: {
+        app: "./src/main.js"
+    },
     output: {
         path: path.resolve(__dirname, "./dist")
     },
@@ -23,20 +25,6 @@ var basicConfig = {
                     presets: ['es2015']
                 }
             }
-        }, {
-            test: /\.css$/,
-            use: [{
-                loader: "style-loader",
-                options: {
-                    sourceMap: true
-                }
-            }, {
-                loader: 'css-loader',
-                options: {
-                    sourceMap: true,
-                    importLoaders: 1
-                }
-            }]
         }, {
             test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
             loader: 'url-loader',
@@ -57,7 +45,9 @@ var basicConfig = {
 
 //webpack开发环境配置
 var devConfig = {
-    entry: { app: ["./src/main.js", "webpack-hot-middleware/client?noInfo=true&reload=true"] },
+    entry: {
+        app: ["./src/main.js", "webpack-hot-middleware/client?noInfo=true&reload=true"]
+    },
     output: {
         filename: "./[name].[hash].js",
         chunkFilename: path.join('./[id].[hash].js')
@@ -67,7 +57,23 @@ var devConfig = {
         rules: [{
             test: /\.vue$/,
             loader: 'vue-loader',
-            options: { cssSourceMap: true }
+            options: {
+                cssSourceMap: true
+            }
+        }, {
+            test: /\.css$/,
+            use: [{
+                loader: "style-loader",
+                options: {
+                    sourceMap: true
+                }
+            }, {
+                loader: 'css-loader',
+                options: {
+                    sourceMap: true,
+                    importLoaders: 1
+                }
+            }]
         }, {
             test: /\.less$/,
             use: [{
@@ -133,15 +139,15 @@ var buildConfig = {
             //配合ExtractTextPlugin使用
             test: /\.css$/,
             loader: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'postcss-loader']
+                use: ['css-loader', 'postcss-loader'],
+                fallback: 'style-loader'
             })
         }, {
             //配合ExtractTextPlugin使用
             test: /\.less$/,
             loader: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'less-loader', 'postcss-loader']
+                use: ['css-loader', 'less-loader', 'postcss-loader'],
+                fallback: 'style-loader'
             })
         }]
     },
@@ -161,7 +167,7 @@ var buildConfig = {
         // 分js打包
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            minChunks: function(module, count) {
+            minChunks: function (module, count) {
                 // any required modules inside node_modules are extracted to vendor
                 return (
                     module.resource &&
