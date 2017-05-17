@@ -36,7 +36,7 @@ gulp.task("dev", function() {
             target: p.proxyServer,
             changeOrigin: true,
             pathRewrite: {
-                ["/" + p.baseURL]: p.baseURL
+                ["/" + p.baseURL]: ""
             }
         }
     };
