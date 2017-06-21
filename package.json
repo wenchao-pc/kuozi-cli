@@ -9,7 +9,7 @@
     "build:pro": "./node_modules/.bin/cross-env NODE_ENV=pro gulp build",
     "publish-test": "./node_modules/.bin/cross-env NODE_ENV=test gulp publish-test",
     "publish-pro": "./node_modules/.bin/cross-env NODE_ENV=pro gulp publish-pro",
-    "sftp-test": "./node_modules/.bin/cross-env NODE_ENV=test gulp sftp-dev",
+    "sftp-test": "./node_modules/.bin/cross-env NODE_ENV=test gulp sftp-test",
     "sftp-pro": "./node_modules/.bin/cross-env NODE_ENV=pro gulp sftp-pro"
   },
   "repository": {
