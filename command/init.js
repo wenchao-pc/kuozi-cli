@@ -6,22 +6,26 @@ const config = require('../templates')
 const chalk = require('chalk')
 
 module.exports = () => {
- co(function *() {
-    // 处理用户输入
-      let tplName = yield prompt('Template name: ')
-      let projectName = yield prompt('Project name: ')
-      let gitUrl
-      let branch
-
-    if (!config.tpl[tplName]) {
-        console.log(chalk.red('\n × Template does not exit!'))
-        process.exit()
+  co(function* () {
+    let keys = Object.keys(config.tpl);
+    for (let i in keys) {
+      console.log(`${i / 1 + 1}.${keys[i]}`);
     }
-    gitUrl = config.tpl[tplName].url
-    branch = config.tpl[tplName].branch
+    // 处理用户输入
+    let tplNameIndex = yield prompt('Template name: ')
+    let projectName = yield prompt('Project name: ')
+    let gitUrl
+    let branch
+
+    if (tplNameIndex > keys.length) {
+      console.log(chalk.red('\n × Template does not exit!'))
+      process.exit()
+    }
+    gitUrl = config.tpl[keys[tplNameIndex]].url
+    branch = config.tpl[keys[tplNameIndex]].branch
 
     // git命令，远程拉取项目并自定义项目名
-    let cmdStr = `git clone ${gitUrl} ${projectName} && cd ${projectName} && git checkout ${branch}`
+    let cmdStr = `git clone ${gitUrl} ${projectName} && cd ${projectName} && git checkout ${branch} && rm -rf .git`
 
     console.log(chalk.white('\n Start generating...'))
 
