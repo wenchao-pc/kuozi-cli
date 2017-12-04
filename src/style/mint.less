@@ -1,0 +1,66 @@
+.mint-cell {
+    min-height: 50px;
+    &.no-title {
+        .mint-cell-title {
+            flex: none;
+            width: 0;
+        }
+        .mint-cell-value {
+            width: 100%;
+        }
+    }
+    img {
+        margin-right: 15px;
+    }
+    .mt-cell-click {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+        height: 100%;
+    }
+    .mint-cell-allow-right::after {
+        top: 50%;
+        right: 10px;
+        width: 7px;
+        height: 13px;
+        margin-top: -7.5px;
+        border: none;
+        // background: url(../assets/img/更多-默认.png) no-repeat;
+        background-size: 7px 13px;
+        transform: none;
+    }
+}
+
+.mt-field-title {
+    margin-left: 10px;
+    padding: 5px 0;
+    font-size: 15px;
+    color: #1a1a1a;
+    background: #fff;
+}
+
+.mint-button {
+    height: 40px;
+}
+
+.mint-button--default {
+    background: #dfdfdf;
+    color: #fff;
+}
+
+.mint-msgbox {
+    border-radius: 10px;
+}
+.mint-tab-item-label {
+    font-size: 18px;
+}
+.mint-navbar .mint-tab-item {
+    height: 50px;
+    padding: 16px 0;
+}
+.mint-navbar .mint-tab-item.is-selected {
+    border-bottom-width: 1px;
+}

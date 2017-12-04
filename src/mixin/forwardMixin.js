@@ -2,7 +2,8 @@ export
 let forwardMixin = {
     methods: {
         forward() {
-            if (this.$route.query.path && this.$route.query.path != '/') {
+            let path = this.$route.query.path;
+            if (path && path != '/' && path != '/index' && path != '/login') {
                 this.$router.replace({
                     path: this.$route.query.path
                 });

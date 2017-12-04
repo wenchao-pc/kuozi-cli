@@ -1,10 +1,12 @@
-@import "common.less";
+@import "variables.less";
 * {
     box-sizing: border-box;
 }
 
 html,
 body {
+    border: 0;
+    margin: 0;
     height: 100%;
     overflow: hidden;
 }
@@ -14,6 +16,14 @@ body {
     overflow: hidden;
 }
 
+ul,
+li,
+p {
+    margin: 0;
+    padding: 0;
+    transform: 1s height linear;
+}
+
 input,
 textarea,
 button {
@@ -21,6 +31,7 @@ button {
     outline: none;
     border: none;
     background: none;
+    -webkit-appearance: none;
 }
 
 input:-webkit-autofill,
@@ -39,62 +50,79 @@ a {
 .hr {
     display: block;
     border-top: 1px solid @hr;
+    transform: scaleY(0.5);
 }
 
 .hr-10 {
     display: block;
     height: 10px;
-    background: @color22;
+    background: @hr;
+}
+
+._hr-border {
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 100%;
+        border-top: 1px solid @hr;
+        transform: scaleY(0.5);
+    }
+    &:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid @hr;
+        transform: scaleY(0.5);
+    }
 }
 
 .hr-border-10 {
+    position: relative;
     display: block;
     height: 10px;
-    background: @color22;
-    border: 1px solid @hr;
-    border-style: solid none;
+    background: @hr;
+    ._hr-border;
 }
 
 .hr-15 {
     display: block;
     height: 15px;
-    background: @gray;
+    background: @hr;
 }
 
 .hr-border-15 {
     display: block;
     height: 15px;
-    background: @color22;
-    border: 1px solid @hr;
-    border-style: solid none;
+    background: @hr;
+    ._hr-border;
 }
 
 .hr-20 {
     display: block;
     height: 20px;
-    background: @color22;
+    background: @hr;
 }
 
 .hr-border-20 {
     display: block;
     height: 20px;
-    background: @color22;
-    border: 1px solid @hr;
-    border-style: solid none;
+    background: @hr;
+    ._hr-border;
 }
 
 .hr-30 {
     display: block;
     height: 30px;
-    background: @color22;
+    background: @hr;
 }
 
 .hr-border-30 {
     display: block;
     height: 30px;
-    background: @color22;
-    border: 1px solid @hr;
-    border-style: solid none;
+    background: @hr;
+    ._hr-border;
 }
 
 .border-top {
@@ -134,27 +162,10 @@ a {
     line-height: 1.5;
 }
 
-.full-height {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-
 .container {
     flex: 1;
-    height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-}
-
-.has-head {
-    padding-top: 1.173333rem;
-}
-
-.has-foot {
-    padding-bottom: 1.4rem;
 }
 
 .input-more {
@@ -183,6 +194,10 @@ a {
 
 .flex {
     display: flex;
+}
+
+.flex-0 {
+    flex: 0 0 auto;
 }
 
 .flex-1 {
@@ -224,3 +239,5 @@ a {
         opacity: .5;
     }
 }
+@import "common.less";
+@import "mint.less";

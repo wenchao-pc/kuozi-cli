@@ -3,8 +3,8 @@
  */
 const restUrl = {
     auth: {
-        name: "登录状态检测",
-        url: "auth"
+        name: "",
+        url: ""
     }
 };
 

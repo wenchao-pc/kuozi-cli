@@ -40,3 +40,5 @@ jspm_packages
 .DS_Store
 
 dist
+.history
+package-lock.json

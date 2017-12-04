@@ -2,21 +2,26 @@
  * Created by kuo zi on 2016/10/18.
  */
 import Vue from "vue";
-import urls from "./../utils/urls.js";
-import project from "./../../config/project.js";
-import _fetch from "./../utils/fetch.js";
+import axios from "axios";
+import store from "store";
+
+import project from "./../../config/project";
+
+import urls from "./../utils/urls";
+import { fetch, $get, $post } from "../utils/fetch";
+
+import UiLayout from "../components/UiLayout.vue";
+import UiHead from "../components/UiHead.vue";
+import UiContainer from "../components/UiContainer.vue";
 
 //全局混合
 Vue.mixin({
-    components: {
-
-    },
+    components: { UiLayout, UiHead, UiContainer },
     data() {
         return {
-            // 图片服务器前缀
-            PrefixImg: project.PrefixImg + "/",
-            pageSize: 15
-        }
+            PageSize: 15,
+            Store: store
+        };
     },
     methods: {
         /**
@@ -24,30 +29,33 @@ Vue.mixin({
          * @param restKey [项目索引,url键]
          * @param join url拼接
          */
-        $get(restKey, join, options) {
-            //快捷写法 默认第一个项目
-            if (typeof restKey === "string") {
-                restKey = ["default", restKey];
-            }
-            return _fetch("get", project.projectConfig[restKey[0]].baseURL + "/" + project.projectConfig[restKey[0]].rootPath, join ? urls[restKey[1]].url + "/" + join : urls[restKey[1]].url, null, this, options);
+        $get(restKey, join, options, noLoading, noToast) {
+            return $get(restKey, join, options, noLoading, noToast, this);
+        },
+        $getDirect(url, options, noLoading, noToast) {
+            return fetch("get", "", url, null, options, noLoading, noToast, this);
         },
         /**
          *post请求
          * @param restKey [项目索引,url键]
          * @param params 请求参数
          */
-        $post(restKey, params, join, options) {
-            if (typeof restKey === "string") {
-                restKey = ["default", restKey];
-            }
-            return _fetch("post", project.projectConfig[restKey[0]].baseURL + "/" + project.projectConfig[restKey[0]].rootPath, join ? urls[restKey[1]].url + "/" + join : urls[restKey[1]].url, params, this, options);
+        $post(restKey, params, join, options, noLoading, noToast) {
+            return $post(restKey, params, join, options, noLoading, noToast, this);
+        },
+        $postDirect(url, params, options, noLoading, noToast) {
+            return fetch("post", "", url, params, options, noLoading, noToast, this);
         },
         /**
          * [$back description]返回事件
          * @return {[type]} [description]
          */
         $back() {
+            this.$store.commit("transition", "pop-out");
             window.history.back("-1");
+        },
+        $to(p) {
+            this.$router.push(p);
         },
         $loading() {
             this.$store.commit("loading");

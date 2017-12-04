@@ -3,151 +3,219 @@ var webpack = require("webpack");
 var merge = require("webpack-merge");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+var CompressionPlugin = require("compression-webpack-plugin");
+
+var othername = function(f) {
+    var hash = JSON.parse(process.env.HASH) ? ".[hash:7]" : "";
+    return `./${f}/[name]${hash}.[ext]`;
+};
+var filename = function() {
+    var hash = JSON.parse(process.env.HASH) ? ".[hash]" : "";
+    return `./[name]${hash}.js`;
+};
+var cssFilename = function() {
+    var hash = JSON.parse(process.env.HASH) ? ".[contenthash]" : "";
+    return `./style${hash}.css`;
+};
+var chunkFilename = function() {
+    var hash = JSON.parse(process.env.HASH) ? ".[hash]" : "";
+    return `./chunk/[id]${hash}.js`;
+};
 
 //webpack基础配置
 var basicConfig = {
-    entry: { app: "./src/main.js" },
-    output: {
-        path: path.resolve(__dirname, "./dist")
+    entry: {
+        app: "./src/index.js"
     },
     resolve: {
-        extensions: [".js", ".vue"]
+        extensions: [".js", ".vue"],
+        alias: {
+            vue: "vue/dist/vue.esm.js",
+            "@src": path.resolve(__dirname, "./src")
+        }
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            exclude: /(node_modules|bower_components)/,
-            use: {
-                loader: 'babel-loader',
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: "babel-loader"
+                }
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: "url-loader",
                 options: {
-                    presets: ['es2015']
+                    limit: 10000,
+                    name: othername("img")
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: "file-loader",
+                options: {
+                    name: othername("fonts")
+                }
+            },
+            {
+                test: /\.ico$/,
+                loader: "file-loader",
+                options: {
+                    name: "./[name].ico"
                 }
             }
-        }, {
-            test: /\.css$/,
-            use: [{
-                loader: "style-loader",
-                options: {
-                    sourceMap: true
-                }
-            }, {
-                loader: 'css-loader',
-                options: {
-                    sourceMap: true,
-                    importLoaders: 1
-                }
-            }]
-        }, {
-            test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-            loader: 'url-loader',
-            options: {
-                limit: 10000,
-                name: './img/[name].[hash:7].[ext]'
+        ]
+    },
+    plugins: [
+        new webpack.DefinePlugin({
+            "process.env": {
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+                SPLIT: process.env.SPLIT
             }
-        }, {
-            test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-            loader: 'file-loader',
-            options: {
-                limit: 10000,
-                name: './fonts/[name].[hash:7].[ext]'
-            }
-        }]
-    }
-}
+        })
+    ]
+};
 
 //webpack开发环境配置
 var devConfig = {
-    entry: { app: ["./src/main.js", "webpack-hot-middleware/client?noInfo=true&reload=true"] },
-    output: {
-        filename: "./[name].[hash].js",
-        chunkFilename: path.join('./[id].[hash].js')
+    entry: {
+        app: ["./src/index.js", "webpack-hot-middleware/client?noInfo=true&reload=true"]
     },
-    devtool: '#source-map',
+    output: {
+        path: path.resolve(__dirname, "./dist"),
+        filename: filename(), //"./[name].[hash].js",
+        chunkFilename: chunkFilename() //'./chunk/[id].[hash].js'
+    },
+    devtool: "#source-map",
     module: {
-        rules: [{
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: { cssSourceMap: true }
-        }, {
-            test: /\.less$/,
-            use: [{
-                loader: "vue-style-loader",
+        rules: [
+            {
+                test: /\.vue$/,
+                loader: "vue-loader",
                 options: {
-                    sourceMap: true
+                    cssSourceMap: true
                 }
-            }, {
-                loader: "css-loader",
-                options: {
-                    sourceMap: true
-                }
-            }, {
-                loader: "less-loader",
-                options: {
-                    sourceMap: true
-                }
-            }]
-        }]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: "style-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            importLoaders: 1
+                        }
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    {
+                        loader: "style-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            importLoaders: 1
+                        }
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: "less-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
+            }
+        ]
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         // https://github.com/ampedandwired/html-webpack-plugin
         new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: 'index.html',
+            filename: "index.html",
+            template: "index.html",
             inject: true
-        }),
-        //开发环境
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"dev"'
-            }
         })
     ]
-}
+};
 
 //webpack生产环境配置
 var buildConfig = {
     output: {
-        filename: "./[name].[chunkhash].js",
-        chunkFilename: path.join('./[id].[chunkhash].js')
+        path: path.resolve(__dirname, "./dist"),
+        filename: filename(),
+        chunkFilename: chunkFilename()
     },
     module: {
-        rules: [{
-            test: /\.vue$/,
-            loader: 'vue-loader',
-            options: {
-                sourceMap: true,
-                loaders: {
-                    css: ExtractTextPlugin.extract({
-                        use: ['css-loader', 'postcss-loader'],
-                        fallback: 'vue-style-loader' // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
-                    }),
-                    less: ExtractTextPlugin.extract({
-                        use: ['css-loader', 'less-loader', 'postcss-loader'],
-                        fallback: 'vue-style-loader' // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
-                    })
+        rules: [
+            {
+                test: /\.vue$/,
+                loader: "vue-loader",
+                options: {
+                    sourceMap: true,
+                    loaders: {
+                        css: ExtractTextPlugin.extract({
+                            use: ["css-loader?minimize", "postcss-loader"],
+                            fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
+                        }),
+                        less: ExtractTextPlugin.extract({
+                            use: ["css-loader?minimize", "postcss-loader", "less-loader"],
+                            fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
+                        })
+                    }
                 }
+            },
+            {
+                //配合ExtractTextPlugin使用
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: ["css-loader?minimize", "postcss-loader"]
+                })
+            },
+            {
+                //配合ExtractTextPlugin使用
+                test: /\.less$/,
+                loader: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: ["css-loader?minimize", "postcss-loader", "less-loader"]
+                })
             }
-        }, {
-            //配合ExtractTextPlugin使用
-            test: /\.css$/,
-            loader: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'postcss-loader']
-            })
-        }, {
-            //配合ExtractTextPlugin使用
-            test: /\.less$/,
-            loader: ExtractTextPlugin.extract({
-                fallback: 'style-loader',
-                use: ['css-loader', 'less-loader', 'postcss-loader']
-            })
-        }]
+        ]
     },
     plugins: [
         //css单独出个文件
-        new ExtractTextPlugin("./style.[contenthash].css"),
+        new ExtractTextPlugin({
+            filename: cssFilename(),
+            allChunks: true
+        }),
         new HtmlWebpackPlugin({
             template: "./index.html",
             inject: true,
@@ -156,51 +224,41 @@ var buildConfig = {
                 collapseWhitespace: true,
                 removeAttributeQuotes: true
             },
-            chunksSortMode: 'dependency'
+            chunksSortMode: "dependency"
         }),
         // 分js打包
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
+            name: "vendor",
             minChunks: function(module, count) {
                 // any required modules inside node_modules are extracted to vendor
-                return (
-                    module.resource &&
-                    /\.js$/.test(module.resource) &&
-                    module.resource.indexOf(
-                        path.join(__dirname, './node_modules')
-                    ) === 0
-                )
+                return module.resource && /\.js$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, "./node_modules")) === 0;
             }
-        }),
-
+        })
     ]
 };
+
+var plugins = [];
+if (JSON.parse(process.env.UGFJS)) {
+    plugins.push(
+        new UglifyJSPlugin({
+            uglifyOptions: {
+                compress: {
+                    warnings: false
+                }
+            },
+            sourceMap: false
+        })
+    );
+}
 
 var config = {
     dev: devConfig,
     test: merge(buildConfig, {
-        plugins: [
-            new webpack.DefinePlugin({
-                'process.env': {
-                    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-                }
-            })
-        ]
+        plugins: plugins
     }),
-    pro: merge(buildConfig, {
-        plugins: [
-            new webpack.DefinePlugin({
-                'process.env': {
-                    NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-                }
-            }),
-            new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
-            }),
-        ]
-    }),
+    production: merge(buildConfig, {
+        plugins: plugins
+    })
 };
 
 module.exports = merge(basicConfig, config[process.env.NODE_ENV]);

@@ -8,17 +8,174 @@ var webpack = require("webpack");
 
 var sftp = require('gulp-sftp');
 
-var project = require("./config/project.js");
-var ssh = require("./config/ssh");
+var path = require("path");
+var fs = require("fs");
+var replace = require("gulp-replace");
+var rename = require("gulp-rename");
+var colors = require("colors");
+
+var readline = require('readline');
+var argvs = JSON.parse(process.env.npm_config_argv || "{}").original || [];
+gulp.task("choose-env", function () {
+    if (argvs[1] != 'dev') {
+        return new Promise((resolve) => {
+            var rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            rl.question(`\n**********NODE_ENV(test):**********\n1.test\n2.production\n`.yellow, function (answer) {
+                switch (answer) {
+                case "1":
+                    process.env.NODE_ENV = "test";
+                    break;
+                case "2":
+                    process.env.NODE_ENV = "production";
+                    break;
+                default:
+                    process.env.NODE_ENV = "test";
+                    break;
+                }
+                rl.close();
+                resolve();
+            });
+        });
+    } else {
+        process.env.NODE_ENV = "dev";
+    }
+});
+gulp.task("choose-split", ["choose-env"], function () {
+    return new Promise((resolve) => {
+        var rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        rl.question(`\n**********SPLIT(y/n):**********\n`.yellow, function (answer) {
+            switch (answer) {
+            case "y":
+                process.env.SPLIT = true;
+                break;
+            case "n":
+                process.env.SPLIT = false;
+                break;
+            default:
+                process.env.SPLIT = false;
+                break;
+            }
+            rl.close();
+            resolve();
+        });
+    });
+});
+
+gulp.task("choose-hash", ["choose-split"], function () {
+    if (argvs[1] == 'dev') {
+        process.env.HASH = true;
+    } else {
+        return new Promise((resolve) => {
+            var rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            rl.question(`\n**********HASH(y/n):**********\n`.yellow, function (answer) {
+                switch (answer) {
+                case "y":
+                    process.env.HASH = true;
+                    break;
+                case "n":
+                    process.env.HASH = false;
+                    break;
+                default:
+                    process.env.HASH = true;
+                    break;
+                }
+                rl.close();
+                resolve();
+            });
+        });
+    }
+});
+
+gulp.task("choose-ugfjs", ["choose-hash"], function () {
+    if (argvs[1] == 'dev') {
+        process.env.UGFJS = false;
+    } else {
+        return new Promise((resolve) => {
+            var rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            rl.question(`\n**********UGFJS(y/n):**********\n`.yellow, function (answer) {
+                switch (answer) {
+                case "y":
+                    process.env.UGFJS = true;
+                    break;
+                case "n":
+                    process.env.UGFJS = false;
+                    break;
+                default:
+                    process.env.UGFJS = false;
+                    break;
+                }
+                rl.close();
+                resolve();
+            });
+        });
+    }
+});
+
+// 清除router文件
+gulp.task("clean-router-split", ["choose-ugfjs"], function () {
+    console.log((colors.green("**********NODE_ENV:") + colors.yellow(process.env.NODE_ENV) + colors.green(" SPLIT:") + colors.yellow(process.env.SPLIT) + colors.green(" HASH:") + colors.yellow(process.env.HASH) + colors.green(" UGFJS:") + colors.yellow(process.env.UGFJS) + colors.green("**********\n")));
+    if (process.env.SPLIT === "true") {
+        return gulp.src("./src/router/router.split.js", {
+            read: false
+        }).pipe(clean());
+    }
+});
+//生成router文件
+gulp.task("split", ["clean-router-split"], function () {
+    if (process.env.SPLIT === "true") {
+        var dir = "./src/view";
+        let routes = [];
+        var readdir = function (d) {
+            var files = fs.readdirSync(d);
+            for (let filename of files) {
+                var fullname = path.join(d, filename);
+                var stats = fs.statSync(fullname);
+                if (stats.isDirectory()) {
+                    readdir(fullname);
+                } else {
+                    if (/.vue$/.test(filename)) {
+                        routes.push({
+                            name: filename.replace(".vue", "").toString(),
+                            path: fullname.replace("src/view", "").replace("src\\view", "").replace(".vue", "").toString(),
+                            meta: "{ login: false }",
+                            component: `() => import ("${fullname.replace("src", "./..")}")`
+                        });
+                    }
+                }
+            }
+        }
+        readdir(dir);
+        var code = "{\n";
+        for (let r of routes) {
+            code = code + `\t${r.name}:{name: "${r.name}",path: "${r.path.replace(/\\/g,"/")}",meta:${r.meta},component: ${r.component.replace(/\\/g,"/")}},\n`
+        }
+        code = code + "}"
+        gulp.src("./src/router/router.split.src.js")
+            .pipe(replace("$routes", code))
+            .pipe(rename("router.split.js"))
+            .pipe(gulp.dest('./src/router/'))
+    }
+});
 
 /**
  * dev-server
  */
-gulp.task("dev", function() {
+gulp.task("dev", ["split"], function () {
     var app = express();
-
+    let c = require("./webpack.config");
     var compiler = webpack(require("./webpack.config"));
-
     //使用webpack-dev-middleware
     var devMiddleware = require("webpack-dev-middleware")(compiler, {
         publicPath: "/",
@@ -31,19 +188,23 @@ gulp.task("dev", function() {
 
     // 开发环境配置代理
     var proxyTable = {};
-    for (var p of Object.values(project.projectConfig)) {
+    var project = require("./config/project.js");
+    for (var k of Object.keys(project.projectConfig)) {
+        var p = project.projectConfig[k];
         proxyTable["/" + p.baseURL] = {
             target: p.proxyServer,
             changeOrigin: true,
             pathRewrite: {
-                ["/" + p.baseURL]: p.baseURL
+                ["/" + p.baseURL]: ""
             }
         }
     };
-    Object.keys(proxyTable).forEach(function(context) {
+    Object.keys(proxyTable).forEach(function (context) {
         var options = proxyTable[context]
         if (typeof options === 'string') {
-            options = { target: options }
+            options = {
+                target: options
+            }
         }
         app.use(proxyMiddleware(context, options))
     })
@@ -56,7 +217,7 @@ gulp.task("dev", function() {
     app.use("/static", express.static("./static"));
 
     // 启动expres服务
-    app.listen(project.devPort, function(error) {
+    app.listen(project.devPort, function (error) {
         if (error) {
             console.log(error);
             return;
@@ -65,27 +226,25 @@ gulp.task("dev", function() {
     });
 });
 
-
-
 /**
  * gulp+webpack Build
  */
 //删除dist
-gulp.task("clean", function() {
+gulp.task("clean", ["split"], function () {
     return gulp.src("./dist", {
         read: false
     }).pipe(clean());
 });
 
 //复制static目录
-gulp.task("cp", ["clean"], function() {
+gulp.task("cp", ["clean"], function () {
     gulp.src("./static/**")
         .pipe(gulp.dest("./dist/static"));
 });
 
 //webpack打包
-gulp.task("build", ["cp"], function(cb) {
-    webpack(require("./webpack.config"), function(err, stats) {
+gulp.task("build", ["cp"], function (cb) {
+    webpack(require("./webpack.config"), function (err, stats) {
         if (err) throw err
         process.stdout.write(stats.toString({
             colors: true,
@@ -102,25 +261,15 @@ gulp.task("build", ["cp"], function(cb) {
  * Build+部署
  */
 // sftp上传开发环境
-gulp.task("sftp-test", function() {
+gulp.task("sftp", ["choose-env"], function () {
+    var ssh = require("./config/ssh");
     return gulp.src('./dist/**')
-        .pipe(sftp(ssh.testPublish));
+        .pipe(sftp(ssh[process.env.NODE_ENV]));
 });
 
-// sftp上传生产环境
-gulp.task("sftp-pro", function() {
+//发布
+gulp.task("publish", ["build"], function () {
+    var ssh = require("./config/ssh");
     return gulp.src('./dist/**')
-        .pipe(sftp(ssh.proPublish));
-});
-
-// 开发环境发布
-gulp.task("publish-test", ["build"], function() {
-    return gulp.src('./dist/**')
-        .pipe(sftp(ssh.testPublish));
-});
-
-// 生产环境发布
-gulp.task("publish-pro", ["build"], function() {
-    return gulp.src('./dist/**')
-        .pipe(sftp(ssh.proPublish));
+        .pipe(sftp(ssh[process.env.NODE_ENV]));
 });

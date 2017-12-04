@@ -1,43 +1,46 @@
 <template>
-    <div class="full-height">
+    <ui-layout class="index">
         
-    </div>
+    </ui-layout>
 </template>
 <script>
-import {
-    forwardMixin
-} from "./../mixin/forwardMixin.js";
+import { forwardMixin } from "./../mixin/forwardMixin.js";
 export default {
     mixins: [forwardMixin],
     data() {
         return {
-            auth: 0
-        }
+            fail: {
+                auth: false,
+                login: false
+            }
+        };
     },
     created() {
-        let self = this;
-        //登录状态检测
-        this.$get("auth").then(res => {
-            window.login = true;
+        this.auth();
+    },
+    methods: {
+        // TODO 检查登录
+        // 成功保存token等信息 并设置window.login = true 然后forward
+        // 失败直接forward
+        auth() {
             this.forward();
-        }).catch(() => {
-            this.forward();
-        });
+        }
     }
-}
+};
 </script>
 <style lang="less" scoped>
-@import "./../styles/common.less";
-.full-height {
-    background: white;
-}
-
-.auth {
-    margin-top: 80%;
-    text-align: center;
-    color: @info;
-    &.auth-fail {
-        color: black;
+@import "./../style/variables.less";
+.index {
+    background: @gray url(./../assets/img/logo.png) no-repeat center 150px;
+    .index-fail {
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        line-height: 500px;
+        a {
+            color: @info;
+            text-decoration: underline;
+        }
     }
 }
 </style>
