@@ -69,10 +69,10 @@ export default {
         line-height: @head-height;
         .head-back {
             width: 35px;
-            // background: url(../assets/img/返回-默认.png) no-repeat center;
+            background: url(../assets/img/返回-默认.png) no-repeat center;
             background-size: 9px 17px;
             &:active {
-                // background-image: url(../assets/img/返回-点击.png);
+                background-image: url(../assets/img/返回-点击.png);
             }
         }
         .head-btns-container {
