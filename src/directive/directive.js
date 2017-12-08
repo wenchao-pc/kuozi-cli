@@ -7,7 +7,7 @@ import Vue from "vue";
  * v-focus
  * 元素获取焦点
  */
-Vue.directive('focus', {
+Vue.directive("focus", {
     // 当绑定元素插入到 DOM 中。
     inserted(el) {
         // 聚焦元素
@@ -15,25 +15,29 @@ Vue.directive('focus', {
     }
 });
 
-Vue.directive('scroll-bottom', {
-    inserted(el) {
+Vue.directive("scroll-bottom", {
+    inserted(el, binding) {
+        el.addEventListener("scroll", () => {
+            if (el.scrollHeight - el.scrollTop - el.clientHeight <= binding.value) {
+                el.setAttribute("data-scroll-bottom", "y");
+            } else {
+                el.setAttribute("data-scroll-bottom", "n");
+            }
+        });
         setTimeout(function() {
             el.scrollTop = el.scrollHeight;
         }, 10);
     },
-    update(el) {
+    componentUpdated(el, binding) {
         setTimeout(function() {
-            el.scrollTop = el.scrollHeight;
-        }, 10);
-    },
-    componentUpdated(el) {
-        setTimeout(function() {
-            el.scrollTop = el.scrollHeight;
+            if (el.getAttribute("data-scroll-bottom") != "n") {
+                el.scrollTop = el.scrollHeight;
+            }
         }, 10);
     }
 });
 
-Vue.directive('scroll-head', {
+Vue.directive("scroll-head", {
     inserted(el) {
         el.addEventListener("scroll", () => {
             let head = document.getElementById("head");
@@ -47,12 +51,10 @@ Vue.directive('scroll-head', {
                 } else {
                     head.style.opacity = 0.95;
                 }
-
             }
-        })
+        });
     }
 });
-
 
 //移动端滑动
 var touchStart = function(e, el) {
@@ -73,16 +75,16 @@ var touchEnd = function(e, el, callback) {
  * v-swipe-left
  * 左滑
  */
-Vue.directive('swipe-left', {
+Vue.directive("swipe-left", {
     acceptStatement: true,
     bind: function(el, binding) {
         var swipeLeft = function(cx, cy, ct) {
             if (Math.abs(cx) > Math.abs(cy) && cx < 0 && ct > 10) {
                 try {
-                    if (typeof binding.value === 'function') {
-                        (binding.value)();
+                    if (typeof binding.value === "function") {
+                        binding.value();
                     } else {
-                        (binding.value.method)(binding.value.params);
+                        binding.value.method(binding.value.params);
                     }
                 } catch (e) {
                     throw new Error("v-swipe-left error parameter");
@@ -101,16 +103,16 @@ Vue.directive('swipe-left', {
  * v-swipe-left
  * 右滑
  */
-Vue.directive('swipe-right', {
+Vue.directive("swipe-right", {
     acceptStatement: true,
     bind: function(el, binding) {
         var swipeLeft = function(cx, cy, ct) {
             if (Math.abs(cx) > Math.abs(cy) && cx > 0 && ct > 10) {
                 try {
-                    if (typeof binding.value === 'function') {
-                        (binding.value)();
+                    if (typeof binding.value === "function") {
+                        binding.value();
                     } else {
-                        (binding.value.method)(binding.value.params);
+                        binding.value.method(binding.value.params);
                     }
                 } catch (e) {
                     throw new Error("v-swipe-left error parameter");

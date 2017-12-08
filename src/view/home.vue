@@ -1,26 +1,24 @@
 <template>
-    <div class="full-height">
-    </div>
+    <ui-layout class="home">
+        <ui-container>
+            主页
+        </ui-container>
+    </ui-layout>
 </template>
+
 <script>
 export default {
-    components: {
-        
-    },
     data() {
-        return {}
+        return {};
     },
-    created() {
-        this.$get("auth")
-    },
-    methods: {
-        
-    }
-}
+    mounted() {},
+    methods: {},
+    computed: {}
+};
 </script>
+
 <style lang="less">
-@import "./../styles/common.less";
-.aaa{
-    font-size: 15px;
+@import "../style/variables.less";
+.home {
 }
 </style>
