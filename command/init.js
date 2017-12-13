@@ -17,12 +17,12 @@ module.exports = () => {
     let gitUrl
     let branch
 
-    if (tplNameIndex > keys.length) {
+    if (tplNameIndex-1 > keys.length || tplNameIndex-1 < 0) {
       console.log(chalk.red('\n × Template does not exit!'))
       process.exit()
     }
-    gitUrl = config.tpl[keys[tplNameIndex]].url
-    branch = config.tpl[keys[tplNameIndex]].branch
+    gitUrl = config.tpl[keys[tplNameIndex-1]].url
+    branch = config.tpl[keys[tplNameIndex-1]].branch
 
     // git命令，远程拉取项目并自定义项目名
     let cmdStr = `git clone ${gitUrl} ${projectName} && cd ${projectName} && git checkout ${branch} && rm -rf .git`
