@@ -34,6 +34,6 @@ export default {
 <style>
 .ui-page {
     text-align: center;
-    padding: 20px 0;
+    padding: 20px 150px 20px 0;
 }
 </style>
