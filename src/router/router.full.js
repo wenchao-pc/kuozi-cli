@@ -1,6 +1,6 @@
 import _last from "lodash/last";
 let routes = {};
-const components = require.context('./../view/', true, /\.vue$/);
+const components = require.context('./../view/main/', true, /\.vue$/);
 components.keys().forEach(key => {
     let path = key.replace(".", "").replace(".vue", "");
     let name = _last(path.split("/"));

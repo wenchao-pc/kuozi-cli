@@ -24,7 +24,7 @@ export let forward = {
                     }
                 } else {
                     this.$router.replace({
-                        name: "home"
+                        name: "main"
                     });
                 }
             }

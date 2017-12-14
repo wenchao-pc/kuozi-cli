@@ -137,7 +137,7 @@ gulp.task("clean-router-split", ["choose-ugfjs"], function() {
 //生成router文件
 gulp.task("split", ["clean-router-split"], function() {
     if (process.env.SPLIT === "true") {
-        var dir = "./src/view";
+        var dir = "./src/view/main";
         let routes = [];
         var readdir = function(d) {
             var files = fs.readdirSync(d);
@@ -151,8 +151,8 @@ gulp.task("split", ["clean-router-split"], function() {
                         routes.push({
                             name: filename.replace(".vue", "").toString(),
                             path: fullname
-                                .replace("src/view", "")
-                                .replace("src\\view", "")
+                                .replace("src/view/main", "")
+                                .replace("src\\view\\main", "")
                                 .replace(".vue", "")
                                 .toString(),
                             meta: "{ login: false }",

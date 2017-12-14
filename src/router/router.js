@@ -4,6 +4,10 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import Index from "../view/index.vue";
+import Login from "../view/login.vue";
+import Main from "../view/main.vue";
+
 // 需要登录页面
 import { login, needlogin, nologin } from "./loginIntercept";
 
@@ -28,11 +32,34 @@ for (let page of nologin) {
     routes[page].meta.login = false;
 }
 
+let allRoutes = [
+    {
+        name: "index",
+        path: "/index",
+        meta: { login: false },
+        component: Index
+    },
+    {
+        name: "login",
+        path: "/login",
+        meta: { login: false },
+        component: Login
+    },
+    {
+        name: "main",
+        path: "/main",
+        meta: { login: true },
+        redirect: { name: "home" },
+        component: Main,
+        children: Object.values(routes)
+    }
+];
+
 let router = new Router({
     // history模式需要后台支持
     // mode: "history",
     // scrollBehavior: () => ({ y: 0 }),
-    routes: Object.values(routes)
+    routes: allRoutes
 });
 
 //路由跳转钱操作

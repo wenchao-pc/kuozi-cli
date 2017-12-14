@@ -1,8 +1,6 @@
 <template>
     <div class="app">
-        <div class="container">
-            <router-view></router-view>
-        </div>
+        <router-view></router-view>
     </div>
 </template>
 <script>
@@ -36,11 +34,6 @@ export default {
 </script>
 <style lang="less">
 .app {
-    display: flex;
-    flex-direction: column;
     height: 100%;
-    .container {
-        flex: 1;
-    }
 }
 </style>

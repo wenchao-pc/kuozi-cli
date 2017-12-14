@@ -14,5 +14,6 @@ export default {};
     overflow: auto;
     background-color: white;
     webkit-overflow-scrolling: touch;
+    padding: 0 20px;
 }
 </style>
