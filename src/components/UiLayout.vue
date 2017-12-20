@@ -31,6 +31,9 @@ export default {
     height: 100%;
     .breadcrumbs {
         padding: 20px;
+        .el-breadcrumb {
+            font-size: 16px;
+        }
     }
     .ui-layout-container {
         flex: 1;
