@@ -3,7 +3,7 @@
         <div v-if="brs.length > 0" class="breadcrumbs">
         <!-- <div v-if="false" class="breadcrumbs"> -->
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item v-for="br in brs" :key="br.name" v-text="br.name" @click.native="$to(br.to)"></el-breadcrumb-item>
+                <el-breadcrumb-item v-for="br in brs" :key="br.name" @click.native="$to(br.to)">{{br.name}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div v-else style="height:20px;"></div>

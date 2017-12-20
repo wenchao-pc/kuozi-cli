@@ -79,7 +79,7 @@ let fetch = function(method, baseURL, url, data, options, noLoading, noToast, vu
                                 vue &&
                                     vue.$message.error({
                                         showClose: true,
-                                        message: "请求服务异常,请稍后再试（${error.response.status}）",
+                                        message: `请求服务异常,请稍后再试（${error.response.status}）`,
                                         type: error
                                     });
                                 break;
