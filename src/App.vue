@@ -19,6 +19,7 @@ export default {
         } else {
             to.query.path = decodeURIComponent(path);
         }
+        window.intercept = true;
         this.$router.replace(to);
     },
     methods: {},
