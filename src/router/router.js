@@ -41,7 +41,7 @@ let router = new Router({
 //路由跳转钱操作
 router.beforeEach((to, form, next) => {
     // 登录过滤
-    if (to.meta.login && !window.login) {
+    if (window.intercept && to.meta.login && !window.login) {
         next({ name: "login", query: { path: to.fullPath } });
     } else {
         next();

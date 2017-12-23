@@ -29,6 +29,7 @@ export default {
             to.query.path = decodeURIComponent(path);
         }
         this.$store.commit("transition", "");
+        window.intercept = true;
         this.$router.replace(to);
     },
     methods: {
