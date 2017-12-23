@@ -4,17 +4,31 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-// 需要登录页面
-import loginIntercept from "../utils/loginIntercept";
+// 是否登录控制
+import { login, needlogin, nologin } from "./loginIntercept";
 
 Vue.use(Router);
 
 let { routes } = require("./router." + (process.env.SPLIT ? "split" : "full") + ".js");
 
-for (let page of loginIntercept) {
+// 配置默认login
+for (let key of Object.keys(routes)) {
+    routes[key].meta = routes[key].meta || {};
+    routes[key].meta.login = login;
+}
+
+// 配置需要登录页面
+for (let page of needlogin) {
     if (!routes[page]) continue;
     routes[page].meta = routes[page].meta || {};
     routes[page].meta.login = true;
+}
+
+// 配置不需要登录页面
+for (let page of nologin) {
+    if (!routes[page]) continue;
+    routes[page].meta = routes[page].meta || {};
+    routes[page].meta.login = false;
 }
 
 let router = new Router({
