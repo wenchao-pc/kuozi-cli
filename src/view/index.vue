@@ -4,9 +4,9 @@
     </ui-layout>
 </template>
 <script>
-import { forwardMixin } from "./../mixin/forwardMixin.js";
+import { forward } from "./../mixin/forward.js";
 export default {
-    mixins: [forwardMixin],
+    mixins: [forward],
     data() {
         return {
             fail: {
