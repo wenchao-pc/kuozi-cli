@@ -19,6 +19,9 @@
 export default {
     props: {
         title: {},
+        backClick: {
+            type: Function
+        },
         noBack: {
             type: Boolean,
             default: false
@@ -30,7 +33,11 @@ export default {
     },
     methods: {
         back() {
-            this.$back();
+            if (this.backClick) {
+                this.backClick();
+            } else {
+                this.$back();
+            }
         }
     }
 };
@@ -38,15 +45,14 @@ export default {
 
 <style lang="less">
 @import "../style/variables.less";
-@head-height: 50px;
-@padding-top: 0px;
 .ui-head {
     position: relative;
-    height: @head-height;
-    background: @bg-head;
+    background: @info;
+    .ui-head-top {
+        width: 100%;
+    }
     .head-title {
         height: @head-height;
-        padding-top: @padding-top;
         &.head-title-text {
             width: 100%;
             line-height: @head-height;
@@ -61,12 +67,10 @@ export default {
     .head-btns {
         display: flex;
         position: absolute;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
         height: @head-height;
-        padding-top: @padding-top;
-        line-height: @head-height;
         .head-back {
             width: 35px;
             background: url(../assets/img/返回-默认.png) no-repeat center;

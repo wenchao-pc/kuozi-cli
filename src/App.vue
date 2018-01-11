@@ -1,9 +1,9 @@
 <template>
-    <div class="app">
+    <div class="app" :class="{'bg-head':hasHead}">
         <transition :name="transition" @afterLeave="afterLeave">
-            <keep-alive>
-                <router-view></router-view>
-            </keep-alive>
+            <!-- <keep-alive> -->
+            <router-view></router-view>
+            <!-- </keep-alive> -->
         </transition>
         <mt-spinner v-if="spinner" type="double-bounce" class="spinner" :color="color" :size="30"></mt-spinner>
         <mt-spinner v-if="!spinner && loading" type="triple-bounce" class="spinner" :color="color" :size="30"></mt-spinner>
@@ -14,7 +14,9 @@ export default {
     data() {
         return {
             color: "#3366cc",
-            flexRow: false
+            flexRow: false,
+            // 默认所有页面有head
+            hasHead: true
         };
     },
     created() {
@@ -52,39 +54,59 @@ export default {
 </script>
 <style lang="less">
 @import "./style/variables.less";
-@time: .5s;
+// 页面过渡时间
+@time: 500ms;
+// 普通状态栏高度
+@ztl1: 20px;
+// iphonex状态栏高度
+@ztl2: 40px;
 .app {
     height: 100%;
     overflow: hidden;
     width: 100%;
+    padding-top: @ztl1;
+    &.bg-head {
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: @head-height + @ztl1;
+            background: @info;
+        }
+    }
+    > div {
+        width: 100%;
+    }
 }
 .pop-out-enter-active,
 .pop-out-leave-active,
 .pop-in-enter-active,
 .pop-in-leave-active {
-    will-change: transform;
-    transition: all @time;
+    position: absolute;
+    top: @ztl1;
     width: 100%;
     height: 100%;
-    top: 0;
-    position: absolute;
+    will-change: transform;
     backface-visibility: hidden;
     perspective: 1000;
+    transition: all @time;
 }
 .pop-out-enter {
-    // opacity: 0;
+    opacity: 0;
     transform: translate3d(-100%, 0, 0);
 }
 .pop-out-leave-active {
-    // opacity: 0;
+    opacity: 0;
     transform: translate3d(100%, 0, 0);
 }
 .pop-in-enter {
-    // opacity: 0;
+    opacity: 0;
     transform: translate3d(100%, 0, 0);
 }
-.vux-pop-in-leave-active {
-    // opacity: 0;
+.pop-in-leave-active {
+    opacity: 0;
     transform: translate3d(-100%, 0, 0);
 }
 
@@ -105,9 +127,20 @@ export default {
         opacity: 0;
     }
 }
-
-.flex-row {
-    width: 200%;
-    flex-direction: row;
+@media screen and (width: 375px) and (height: 812px) {
+    .app {
+        padding-top: @ztl2;
+        &.bg-head {
+            &::before {
+                height: @head-height + @ztl2;
+            }
+        }
+    }
+    .pop-out-enter-active,
+    .pop-out-leave-active,
+    .pop-in-enter-active,
+    .pop-in-leave-active {
+        top: @ztl2;
+    }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <ui-layout class="index">
-        
+
     </ui-layout>
 </template>
 <script>
@@ -20,10 +20,10 @@ export default {
     },
     methods: {
         // TODO 检查登录
-        // 成功保存token等信息 并设置window.login = true 然后forward
-        // 失败直接forward
+        // token有效 forward(true)
+        // token有效 forward(false)
         auth() {
-            this.forward();
+            this.forward(true);
         }
     }
 };
