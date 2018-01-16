@@ -57,7 +57,8 @@ export default {
 // 页面过渡时间
 @time: 500ms;
 // 普通状态栏高度
-@ztl1: 20px;
+// @ztl1: 20px;
+@ztl1: 0px;
 // iphonex状态栏高度
 @ztl2: 40px;
 .app {
@@ -91,7 +92,9 @@ export default {
     will-change: transform;
     backface-visibility: hidden;
     perspective: 1000;
-    transition: all @time;
+    transition: @time;
+    transition-property: transform, opacity;
+    padding-bottom: @ztl1;
 }
 .pop-out-enter {
     opacity: 0;
@@ -141,6 +144,7 @@ export default {
     .pop-in-enter-active,
     .pop-in-leave-active {
         top: @ztl2;
+        padding-bottom: @ztl2;
     }
 }
 </style>
