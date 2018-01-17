@@ -19,7 +19,7 @@ var math = {
         return Math.round(num1 * m + num2 * m) / m;
     },
     sub: function(num1, num2) {
-        var r1, r2, m;
+        var r1, r2, m, n;
 
         try {
             r1 = num1.toString().split('.')[1].length;
