@@ -4,7 +4,8 @@
     </ui-layout>
 </template>
 <script>
-import { forward } from "./../mixin/forward.js";
+import forward from "./../mixin/forward.js";
+import { login } from "../router/loginIntercept";
 export default {
     mixins: [forward],
     data() {
@@ -16,14 +17,20 @@ export default {
         };
     },
     created() {
-        this.auth();
+        // 开始登录校验
+        window.intercept = true;
+        if (login) {
+            this.auth();
+        } else {
+            this.forward(true);
+        }
     },
     methods: {
         // TODO 检查登录
         // token有效 forward(true)
         // token有效 forward(false)
         auth() {
-            this.forward(true);
+            this.forward(false);
         }
     }
 };

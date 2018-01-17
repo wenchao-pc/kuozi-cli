@@ -1,5 +1,6 @@
 import store from "store";
-export let forward = {
+import { login } from "../router/loginIntercept";
+export default {
     methods: {
         forward(e, token) {
             if (e === false) {
@@ -12,7 +13,7 @@ export let forward = {
                     }
                 }
                 let path = this.$route.query.path;
-                if (path && path != "/" && path != "/index" && path != "/login") {
+                if (path && path != "/" && !/^\/index/.test(path) && !/^\/login/.test(path)) {
                     if (token) {
                         this.$router.push({
                             path: this.$route.query.path

@@ -1,7 +1,7 @@
 <template>
     <ui-layout>
-        <ui-head title="测试"></ui-head>
-        <ui-container  @click.native="$to({name:'test1'})">
+        <ui-head title="测试1"></ui-head>
+        <ui-container>
             {{msg}}
         </ui-container>
     </ui-layout>
@@ -11,7 +11,7 @@
 export default {
     data() {
         return {
-            msg: "测试"
+            msg: "测试1"
         };
     },
     created() {},

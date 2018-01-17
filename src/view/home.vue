@@ -1,6 +1,6 @@
 <template>
     <ui-layout>
-        <ui-head title="首页" no-back></ui-head>
+        <!-- <ui-head title="首页" no-back></ui-head> -->
         <ui-container @click.native="$to({name:'test'})">
             {{msg}}
         </ui-container>

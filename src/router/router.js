@@ -2,6 +2,7 @@
  * Created by kuo zi on 2016/10/12.
  */
 import Vue from "vue";
+import store from "./../store/store";
 import Router from "vue-router";
 
 // 是否登录控制
@@ -38,14 +39,25 @@ let router = new Router({
     routes: Object.values(routes)
 });
 
+let back = false;
+window.addEventListener("popstate",(e)=>{
+    back = true;
+});
+
 //路由跳转钱操作
 router.beforeEach((to, form, next) => {
-    // 登录过滤
-    if (window.intercept && to.meta.login && !window.login) {
-        next({ name: "login", query: { path: to.fullPath } });
-    } else {
-        next();
-    }
+    setTimeout(() => {
+        if (back){
+            store.commit("transition", "pop-out");
+        }
+        // 登录过滤
+        if (window.intercept && to.meta.login && !window.login) {
+            next({ name: "login", query: { path: to.fullPath } });
+        } else {
+            next();
+        }
+        back = false;
+    }, 10);
 });
 
 export default router;

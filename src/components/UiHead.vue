@@ -48,9 +48,7 @@ export default {
 .ui-head {
     position: relative;
     background: @info;
-    .ui-head-top {
-        width: 100%;
-    }
+    padding-top: @ztl1;
     .head-title {
         height: @head-height;
         &.head-title-text {

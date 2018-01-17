@@ -1,5 +1,5 @@
 <template>
-    <div class="app" :class="{'bg-head':hasHead}">
+    <div class="app" :class="{'no-head':noHead}">
         <transition :name="transition" @afterLeave="afterLeave">
             <!-- <keep-alive> -->
             <router-view></router-view>
@@ -16,10 +16,12 @@ export default {
             color: "#3366cc",
             flexRow: false,
             // 默认所有页面有head
-            hasHead: true
+            noHead: false,
+            noHeads: ["home"]
         };
     },
     created() {
+        // 监听浏览器返回事件
         this.$store.commit("spinner", false);
         let to = { name: "index", query: {} };
         let path = window.location.hash.replace("#", "");
@@ -31,12 +33,16 @@ export default {
             to.query.path = decodeURIComponent(path);
         }
         this.$store.commit("transition", "");
-        window.intercept = true;
         this.$router.replace(to);
     },
     methods: {
         afterLeave() {
             this.$store.commit("transition", "pop-in");
+        }
+    },
+    watch: {
+        "$route.name": function(v, o) {
+            this.noHead = this.noHeads.find(e => e == v) || this.noHeads.find(e => e == o);
         }
     },
     computed: {
@@ -56,26 +62,14 @@ export default {
 @import "./style/variables.less";
 // 页面过渡时间
 @time: 500ms;
-// 普通状态栏高度
-// @ztl1: 20px;
-@ztl1: 0px;
-// iphonex状态栏高度
-@ztl2: 40px;
 .app {
     height: 100%;
     overflow: hidden;
     width: 100%;
-    padding-top: @ztl1;
-    &.bg-head {
-        position: relative;
-        &::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: @head-height + @ztl1;
-            background: @info;
-        }
+    background: linear-gradient(to bottom, @info, @info) no-repeat;
+    background-size: 100% @head-height + @ztl1;
+    &.no-head {
+        background: none;
     }
     > div {
         width: 100%;
@@ -86,7 +80,6 @@ export default {
 .pop-in-enter-active,
 .pop-in-leave-active {
     position: absolute;
-    top: @ztl1;
     width: 100%;
     height: 100%;
     will-change: transform;
@@ -94,7 +87,6 @@ export default {
     perspective: 1000;
     transition: @time;
     transition-property: transform, opacity;
-    padding-bottom: @ztl1;
 }
 .pop-out-enter {
     opacity: 0;
@@ -128,23 +120,6 @@ export default {
         height: 100%;
         background: #000;
         opacity: 0;
-    }
-}
-@media screen and (width: 375px) and (height: 812px) {
-    .app {
-        padding-top: @ztl2;
-        &.bg-head {
-            &::before {
-                height: @head-height + @ztl2;
-            }
-        }
-    }
-    .pop-out-enter-active,
-    .pop-out-leave-active,
-    .pop-in-enter-active,
-    .pop-in-leave-active {
-        top: @ztl2;
-        padding-bottom: @ztl2;
     }
 }
 </style>
