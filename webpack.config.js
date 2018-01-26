@@ -6,23 +6,22 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 var CompressionPlugin = require("compression-webpack-plugin");
 
-var othername = function(f) {
+var othername = function (f) {
     var hash = JSON.parse(process.env.HASH) ? ".[hash:7]" : "";
     return `./${f}/[name]${hash}.[ext]`;
 };
-var filename = function() {
+var filename = function () {
     var hash = JSON.parse(process.env.HASH) ? ".[hash]" : "";
     return `./[name]${hash}.js`;
 };
-var cssFilename = function() {
+var cssFilename = function () {
     var hash = JSON.parse(process.env.HASH) ? ".[contenthash]" : "";
     return `./style${hash}.css`;
 };
-var chunkFilename = function() {
+var chunkFilename = function () {
     var hash = JSON.parse(process.env.HASH) ? ".[hash]" : "";
     return `./chunk/[id]${hash}.js`;
 };
-
 //webpack基础配置
 var basicConfig = {
     entry: {
@@ -36,43 +35,43 @@ var basicConfig = {
         }
     },
     module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: "babel-loader"
-                }
-            },
-            {
-                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                loader: "url-loader",
-                options: {
-                    limit: 10000,
-                    name: othername("img")
-                }
-            },
-            {
-                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader: "file-loader",
-                options: {
-                    name: othername("fonts")
-                }
-            },
-            {
-                test: /\.ico$/,
-                loader: "file-loader",
-                options: {
-                    name: "./[name].ico"
-                }
+        rules: [{
+            test: /\.js$/,
+            exclude: /(node_modules|bower_components)/,
+            use: {
+                loader: "babel-loader"
             }
+        },
+        {
+            test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+            loader: "url-loader",
+            options: {
+                limit: 10000,
+                name: othername("img")
+            }
+        },
+        {
+            test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+            loader: "file-loader",
+            options: {
+                name: othername("fonts")
+            }
+        },
+        {
+            test: /\.ico$/,
+            loader: "file-loader",
+            options: {
+                name: "./[name].ico"
+            }
+        }
         ]
     },
     plugins: [
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-                SPLIT: process.env.SPLIT
+                SPLIT: process.env.SPLIT,
+                PROJECT: JSON.stringify(process.env.PROJECT)
             }
         })
     ]
@@ -90,68 +89,64 @@ var devConfig = {
     },
     devtool: "#source-map",
     module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                loader: "vue-loader",
+        rules: [{
+            test: /\.vue$/,
+            loader: "vue-loader",
+            options: {
+                cssSourceMap: true
+            }
+        },
+        {
+            test: /\.css$/,
+            use: [{
+                loader: "style-loader",
                 options: {
-                    cssSourceMap: true
+                    sourceMap: true
                 }
             },
             {
-                test: /\.css$/,
-                use: [
-                    {
-                        loader: "style-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: true,
-                            importLoaders: 1
-                        }
-                    },
-                    {
-                        loader: "postcss-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                loader: "css-loader",
+                options: {
+                    sourceMap: true,
+                    importLoaders: 1
+                }
             },
             {
-                test: /\.less$/,
-                use: [
-                    {
-                        loader: "style-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: true,
-                            importLoaders: 1
-                        }
-                    },
-                    {
-                        loader: "postcss-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    {
-                        loader: "less-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                loader: "postcss-loader",
+                options: {
+                    sourceMap: true
+                }
             }
+            ]
+        },
+        {
+            test: /\.less$/,
+            use: [{
+                loader: "style-loader",
+                options: {
+                    sourceMap: true
+                }
+            },
+            {
+                loader: "css-loader",
+                options: {
+                    sourceMap: true,
+                    importLoaders: 1
+                }
+            },
+            {
+                loader: "postcss-loader",
+                options: {
+                    sourceMap: true
+                }
+            }, {
+                loader: "less-loader",
+                options: {
+                    sourceMap: true
+                }
+            }
+            ]
+        }
         ]
     },
     plugins: [
@@ -174,40 +169,39 @@ var buildConfig = {
         chunkFilename: chunkFilename()
     },
     module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                loader: "vue-loader",
-                options: {
-                    sourceMap: true,
-                    loaders: {
-                        css: ExtractTextPlugin.extract({
-                            use: ["css-loader?minimize", "postcss-loader"],
-                            fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
-                        }),
-                        less: ExtractTextPlugin.extract({
-                            use: ["css-loader?minimize", "postcss-loader", "less-loader"],
-                            fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
-                        })
-                    }
+        rules: [{
+            test: /\.vue$/,
+            loader: "vue-loader",
+            options: {
+                sourceMap: true,
+                loaders: {
+                    css: ExtractTextPlugin.extract({
+                        use: ["css-loader?minimize", "postcss-loader"],
+                        fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
+                    }),
+                    less: ExtractTextPlugin.extract({
+                        use: ["css-loader?minimize", "postcss-loader", "less-loader"],
+                        fallback: "vue-style-loader" // <- this is a dep of vue-loader, so no need to explicitly install if using npm3
+                    })
                 }
-            },
-            {
-                //配合ExtractTextPlugin使用
-                test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: ["css-loader?minimize", "postcss-loader"]
-                })
-            },
-            {
-                //配合ExtractTextPlugin使用
-                test: /\.less$/,
-                loader: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: ["css-loader?minimize", "postcss-loader", "less-loader"]
-                })
             }
+        },
+        {
+            //配合ExtractTextPlugin使用
+            test: /\.css$/,
+            loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: ["css-loader?minimize", "postcss-loader"]
+            })
+        },
+        {
+            //配合ExtractTextPlugin使用
+            test: /\.less$/,
+            loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: ["css-loader?minimize", "postcss-loader", "less-loader"]
+            })
+        }
         ]
     },
     plugins: [
@@ -229,7 +223,7 @@ var buildConfig = {
         // 分js打包
         new webpack.optimize.CommonsChunkPlugin({
             name: "vendor",
-            minChunks: function(module, count) {
+            minChunks: function (module, count) {
                 // any required modules inside node_modules are extracted to vendor
                 return module.resource && /\.js$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, "./node_modules")) === 0;
             }

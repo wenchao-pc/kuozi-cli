@@ -10,10 +10,11 @@
     </div>
 </template>
 <script>
+import { STRING } from "./utils/constants";
 export default {
     data() {
         return {
-            color: "#3366cc",
+            color: STRING.INFO,
             flexRow: false,
             // 默认所有页面有head
             noHead: false,

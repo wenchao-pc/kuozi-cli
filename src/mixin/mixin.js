@@ -5,7 +5,7 @@ import Vue from "vue";
 import axios from "axios";
 import store from "store";
 
-import project from "./../../config/project";
+import project from "../../config/project/project.env";
 
 import urls from "./../utils/urls";
 import { fetch, $get, $post } from "../utils/fetch";
