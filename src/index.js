@@ -7,6 +7,7 @@ import Vue from "vue";
 import MintUI from 'mint-ui';
 import 'mint-ui/lib/style.css';
 import "./style/style.less";
+import "./../config/project/project.css";
 import router from './router/router';
 import store from './store/store';
 import "./directive/directive";
