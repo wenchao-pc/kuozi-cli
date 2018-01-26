@@ -15,7 +15,6 @@ let fetch = function(method, baseURL, url, data, options, noLoading, noToast, vu
         o.baseURL = baseURL;
         o.url = url;
         o.data = data;
-        o.headers = o.headers || {};
         o.headers["x-token"] = token;
         if (!noLoading) {
             // vue && vue.$$loading();

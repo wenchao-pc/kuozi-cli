@@ -17,15 +17,7 @@ var colors = require("colors");
 var readline = require("readline");
 var argvs = JSON.parse(process.env.npm_config_argv || "{}").original || [];
 process.env.PROJECT = argvs[2] == undefined ? "default" : argvs[2].replace("--", '');
-
-gulp.task("replace-variables", function () {
-    return gulp.src("./src/style/variables.src.less")
-        .pipe(replace("$PROJECT", process.env.PROJECT))
-        .pipe(rename("variables.less"))
-        .pipe(gulp.dest('./src/style/'));
-})
-
-gulp.task("choose-env", ['replace-variables'], function() {
+gulp.task("choose-env", function() {
     if (argvs[1] != "dev") {
         return new Promise(resolve => {
             var rl = readline.createInterface({

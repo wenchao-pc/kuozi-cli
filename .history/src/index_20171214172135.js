@@ -9,7 +9,6 @@ import "element-ui/lib/theme-chalk/index.css";
 // import "./style/element-variables.scss";
 
 import "./style/style.less";
-import "./../config/project/project.css";
 
 import router from "./router/router";
 import store from "./store/store";

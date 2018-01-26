@@ -1,4 +1,4 @@
-import project from "../../config/project/project.env";
+import project from "./../../config/project";
 import urls from "./../utils/urls";
 
 import axios from "axios";
@@ -15,7 +15,6 @@ let fetch = function(method, baseURL, url, data, options, noLoading, noToast, vu
         o.baseURL = baseURL;
         o.url = url;
         o.data = data;
-        o.headers = o.headers || {};
         o.headers["x-token"] = token;
         if (!noLoading) {
             // vue && vue.$$loading();
@@ -36,7 +35,7 @@ let fetch = function(method, baseURL, url, data, options, noLoading, noToast, vu
                     if (res.code == 999 && vue.$route.name != "index") {
                         vue && vue.$to({ name: "login", query: { path: vue.$route.fullPath } });
                     } else {
-                        if (!noToast) {
+                        if (!o.noToast) {
                             vue &&
                                 vue.$message({
                                     showClose: true,

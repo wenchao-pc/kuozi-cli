@@ -71,8 +71,7 @@ var basicConfig = {
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-                SPLIT: process.env.SPLIT,
-                PROJECT: JSON.stringify(process.env.PROJECT)
+                SPLIT: process.env.SPLIT
             }
         })
     ]

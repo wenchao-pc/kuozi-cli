@@ -10,6 +10,6 @@ export default {};
 @import "./../style/variables.less";
 header {
     height: 50px;
-    background: @info;
+    background: #409eff;
 }
 </style>

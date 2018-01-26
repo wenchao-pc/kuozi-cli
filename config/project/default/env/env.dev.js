@@ -1,9 +1,11 @@
 module.exports = {
+    devPort: 8081,
     projectConfig: {
         default: {
             name: "xxx",
             rootPath: "xxx",
-            baseURL: "https://xxx.com"
+            baseURL: "xxx",
+            proxyServer: "xxx"
         }
     }
 }

@@ -6,10 +6,9 @@
 export default {};
 </script>
 
-<style lang="less">
-@import "./../style/variables.less";
+<style>
 header {
     height: 50px;
-    background: @info;
+    background: #409eff;
 }
 </style>
